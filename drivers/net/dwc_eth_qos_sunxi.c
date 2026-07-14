@@ -73,6 +73,18 @@ static int gamc210_set_cfg(struct udevice *dev, phy_interface_t interface_type)
 	void __iomem *cfg_base;
 	u32 val, reg = 0;
 
+	/*
+	 * FIXME: Ugly hack, we don't have proper support for sunxi divider
+	 * clocks, while must ensure the GMAC0_PHY clock, which might supply
+	 * the external PHY, runs at expected frequency, and most of the cases
+	 * it should be 25MHz (factor = 150MHz / 25MHz - 1 = 5
+	 */
+	void __iomem *p = (void __iomem *)(0x2002000 + 0x1410);
+	reg = readl(p);
+	reg &= ~GENMASK(4, 0);
+	reg |= 5;
+	writel(reg, p);
+
 	cfg_base = (void __iomem *)dev_read_addr_index_ptr(dev, 1);
 	if (!cfg_base) {
 		dev_err(dev, "cannot find cfg reg base\n");
@@ -185,7 +197,7 @@ static int gmac200_set_syscon(struct udevice *dev, phy_interface_t interface_typ
 	case PHY_INTERFACE_MODE_RGMII_ID:
 	case PHY_INTERFACE_MODE_RGMII_RXID:
 	case PHY_INTERFACE_MODE_RGMII_TXID:
-		reg |= GMAC200_SYSCON_EPIT | GMAC_ETCS_INT_GMII;
+		reg |= GMAC200_SYSCON_EPIT | GMAC_ETCS_EXT_GMII;
 		break;
 	case PHY_INTERFACE_MODE_RMII:
 		reg |= GMAC200_SYSCON_RMII_EN;
