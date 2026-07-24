@@ -102,12 +102,12 @@
 };
 
 &gmac0 {
-	phy-mode = "rgmii-id";
+	phy-mode = "rgmii";
 	phy-handle = <&ext_rgmii1_phy>;
 	phy-supply = <&reg_dc1sw1>;
 
-	tx-internal-delay-ps = <1300>;
-	rx-internal-delay-ps = <1000>;
+	tx-internal-delay-ps = <1000>;
+	rx-internal-delay-ps = <2000>;
 
 	status = "okay";
 };
@@ -118,7 +118,7 @@
 		reg = <1>;
 		reset-gpios = <&pio 7 16 GPIO_ACTIVE_LOW>; /* PH16 */
 		reset-assert-us = <10000>;
-		reset-deassert-us = <150000>;
+		reset-deassert-us = <30000>;
 	};
 };
 
