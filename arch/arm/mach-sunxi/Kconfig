@@ -264,6 +264,14 @@ config SUNXI_BL31_BASE
 	help
 	  Address where BL31 (TF-A) is loaded, or zero if BL31 is not used.
 
+config SUNXI_BL32_BASE
+	hex
+	default 0x40000000 if MACH_SUN60I_A733
+	default 0x0
+	help
+	  Address where BL32 (OP-TEE) is loaded, or zero if BL32 is not used.
+	  Matches TF-A BL32_BASE / OP-TEE CFG_TZDRAM_START when SPD=opteed.
+
 config SUNXI_SCP_BASE
 	hex
 	default 0x00050000 if MACH_SUN50I || MACH_SUN50I_H5

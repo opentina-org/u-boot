@@ -76,11 +76,20 @@
  * There is no compression for arm64 kernels (yet), so leave some space
  * for really big kernels, say 256MB for now.
  * Scripts, PXE and DTBs should go afterwards, leaving the rest for the initrd.
+ *
+ * When BL32/OP-TEE occupies DRAM start (TZDRAM 32MiB + SHM 4MiB on A733),
+ * keep kernel/decompress workspace after that and below U-Boot (0x4a000000).
  */
 #define BOOTM_SIZE        __stringify(0xa000000)
+#if CONFIG_SUNXI_BL32_BASE
+#define KERNEL_ADDR_R     __stringify(SDRAM_OFFSET(3000000))
+#define KERNEL_COMP_ADDR_R __stringify(SDRAM_OFFSET(7000000))
+#define KERNEL_COMP_SIZE  __stringify(0x2800000)
+#else
 #define KERNEL_ADDR_R     __stringify(SDRAM_OFFSET(0080000))
 #define KERNEL_COMP_ADDR_R __stringify(SDRAM_OFFSET(4000000))
 #define KERNEL_COMP_SIZE  __stringify(0xb000000)
+#endif
 #define FDT_ADDR_R        __stringify(SDRAM_OFFSET(FA00000))
 #define SCRIPT_ADDR_R     __stringify(SDRAM_OFFSET(FC00000))
 #define PXEFILE_ADDR_R    __stringify(SDRAM_OFFSET(FD00000))
