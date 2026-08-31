@@ -95,6 +95,23 @@
 				};
 #endif
 
+#if CONFIG_SUNXI_BL32_BASE
+				tee {
+					description = "OP-TEE OS";
+					type = "firmware";
+					os = "tee";
+					arch = ARCH;
+					compression = "none";
+					load = <CONFIG_SUNXI_BL32_BASE>;
+					entry = <CONFIG_SUNXI_BL32_BASE>;
+
+					tee-os {
+						filename = "tee.bin";
+						missing-msg = "tee-sunxi";
+					};
+				};
+#endif
+
 				@fdt-SEQ {
 					description = "NAME";
 					type = "flat_dt";
@@ -112,7 +129,13 @@
 #else
 					firmware = "uboot";
 #endif
+#if CONFIG_SUNXI_BL32_BASE
 #if CONFIG_SUNXI_SCP_BASE
+					loadables = "scp", "tee", "uboot";
+#else
+					loadables = "tee", "uboot";
+#endif
+#elif CONFIG_SUNXI_SCP_BASE
 					loadables = "scp", "uboot";
 #else
 					loadables = "uboot";
